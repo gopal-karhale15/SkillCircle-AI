@@ -1,6 +1,7 @@
 
 package com.skillcircle.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +23,11 @@ public class UserProfile {
 
     @Column(length = 1000)
     private String skills;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private UserAccount owner;
 
     public UserProfile() {
     }
@@ -68,5 +74,12 @@ public class UserProfile {
     public void setSkills(String skills) {
         this.skills = skills;
     }
-}
 
+    public UserAccount getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserAccount owner) {
+        this.owner = owner;
+    }
+}

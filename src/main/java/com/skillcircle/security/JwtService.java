@@ -18,7 +18,20 @@ public class JwtService {
     private String secret;
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException(
+                    "JWT secret is empty. Check IntelliJ Run Configuration."
+            );
+        }
+
+        byte[] keyBytes = Decoders.BASE64.decode(secret.trim());
+
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException(
+                    "JWT secret must decode to at least 32 bytes."
+            );
+        }
+
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

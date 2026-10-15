@@ -2,7 +2,6 @@
 package com.skillcircle.config;
 
 import com.skillcircle.security.JwtAuthenticationFilter;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -35,8 +34,14 @@ public class SecurityConfig {
         );
 
         config.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "PATCH",
-                        "DELETE", "OPTIONS")
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "OPTIONS"
+                )
         );
 
         config.setAllowedHeaders(
@@ -68,12 +73,15 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/error",
                                 "/health",
+                                "/api/health",
                                 "/ws",
                                 "/ws/**",
                                 "/api/auth/signup",
                                 "/api/auth/login"
                         ).permitAll()
+
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/profiles",
@@ -83,7 +91,22 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/profiles"
-                        ).permitAll()
+                        ).authenticated()
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/profiles/**"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/api/profiles/**"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/profiles/**"
+                        ).authenticated()
 
                         .anyRequest().authenticated()
                 )
